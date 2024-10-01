@@ -1,5 +1,22 @@
 {
+  "name": "ahh",
+  "version": "1.0.0",
+  "description": "COMP3123 Full Stack Dev Assignment 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js localhost 3000"
+  },
+  "keywords": [],
+  "author": "",
+  "homepage": "https://nodejs.org/",
+  "license": "ISC",
   "dependencies": {
+    "express": "^4.21.0",
     "node.js": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
