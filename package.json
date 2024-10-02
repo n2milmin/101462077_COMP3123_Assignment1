@@ -1,5 +1,5 @@
 {
-  "name": "ahh",
+  "name": "a1",
   "version": "1.0.0",
   "description": "COMP3123 Full Stack Dev Assignment 1",
   "main": "index.js",
@@ -8,8 +8,23 @@
     "start": "node index.js",
     "dev": "nodemon index.js localhost 3000"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mongoDb",
+    "POST",
+    "GET",
+    "DELETE",
+    "RESTful",
+    "CRUD",
+    "JavaScript",
+    "JSON",
+    "Node.js",
+    "express"
+  ],
+  "author": {
+      "name": "Nicole Milmine",
+      "id": "101462077",
+      "email": "nicole.milmine@georgebrown.com"
+  },
   "homepage": "https://nodejs.org/",
   "license": "ISC",
   "dependencies": {
