@@ -6,6 +6,15 @@ const empRouter = require('./employees');
 const SERVER_PORT = process.env.port || 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true})); 
+
+const loggerMiddleware = (req, res, next) => {
+    console.log(`Logged ${req.url} ${req.method} -- ${new Date()}`);
+    next();
+}
+// Apply middleware to all requests 
+app.use(loggerMiddleware)
+
 app.use('/user', userRouter)
 app.use('/emp', empRouter)
 
