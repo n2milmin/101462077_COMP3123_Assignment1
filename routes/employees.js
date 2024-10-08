@@ -66,18 +66,26 @@ router.put("/employees/:id", async (req, res) => {
             {positon: positon}, {salary: salary});
         
         res.status(201).json({
-            message: "Employee details updated successfully"
+            message: "Employee details updated successfully."
         });
     }catch(e){
         res.status(500).send(e);
     }
-
-    res.send(`Update Employee by ID: ${req.params.id}`);
 });
 
-//http://localhost:3000/api/v1/emp/employees/id
-router.delete("/employees/:id", (req, res) => {
-    res.send(`Delete Employee by ID: ${req.params.id}`);
+//http://localhost:3000/api/v1/emp/employees/{eid}
+router.delete("/employees/:id", async (req, res) => {
+    try{
+        const id = req.params;
+
+        await model.findByIdAndDelete({_id: id});
+
+        res.status(201).json({
+            message: "Employee deleted successfully."
+        })
+    }catch(e){
+        res.status(500).send(e);
+    }
 });
 
 module.exports = router;
