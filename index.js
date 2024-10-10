@@ -1,16 +1,27 @@
 const express = require('express');
 const app = express();
-const userRouter = require('./users');
-const empRouter = require('./employees');
-const errorHanldingMiddleware = require('./errorHandlingMiddleware');
-
-const SERVER_PORT = process.env.port || 3000;
+const mongoose = require('mongoose');
+const apiv1 = express();
+const userRouter = require('./routes/users');
+const empRouter = require('./routes/employees')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true})); 
 
-app.use('/user', userRouter)
-app.use('/emp', empRouter)
+apiv1.use('/user', userRouter);
+apiv1.use('/emp', empRouter);
+app.use('/api/v1', apiv1)
+
+const SERVER_PORT = 3000;
+
+mongoose.connect('mongodb://admin:admin@localhost:27017/comp3123?authSource=admin', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Connected to DB");
+}).catch(err => {
+    console.log(err);
+});
 
 const loggerMiddleware = (req, res, next) => {
     console.log(`Logged ${req.url} ${req.method} -- ${new Date()}`);
@@ -18,21 +29,15 @@ const loggerMiddleware = (req, res, next) => {
 }
 // Apply middleware to all requests 
 app.use('/user', loggerMiddleware)
-// Error handling Middleware
-app.use(errorHanldingMiddleware)
 
 // Error endpoint 
 app.get('/error', (req, res) => {
     throw new Error('This is a forced error');
-    res.send('Welcome to Express error handling');
 });
 
 //http://localhost:3000/
-app.get('/', (req, res) => {
+app.route('/').get((req, res) => {
     res.send("<h1>Welcome</h1>");
-});
-app.get('/about', (req, res) => {
-    res.send("About Page");
 });
 
 // Listen to server
