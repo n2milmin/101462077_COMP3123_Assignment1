@@ -21,14 +21,15 @@
     "express"
   ],
   "author": {
-      "name": "Nicole Milmine",
-      "id": "101462077",
-      "email": "nicole.milmine@georgebrown.com"
+    "name": "Nicole Milmine",
+    "id": "101462077",
+    "email": "nicole.milmine@georgebrown.com"
   },
   "homepage": "https://nodejs.org/",
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.0",
+    "mongoose": "^8.7.0",
     "node.js": "^0.0.1-security"
   },
   "devDependencies": {

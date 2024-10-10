@@ -1,5 +1,6 @@
 const express = require('express');
 const model = require("../models/Employee");
+const mongoose = require('mongoose');
 const router = express.Router();
 
 //http://localhost:3000/api/v1/emp/
@@ -20,7 +21,9 @@ router.get("/employees", async (req, res) => {
 //http://localhost:3000/api/v1/emp/employees/id
 router.get("/employees/:id", async (req, res) => {
     try{
-        const emp = await model.findOne({id: req.query});
+        const id = new mongoose.Types.ObjectId(req.params)
+        const emp = await model.findOne({_id: id});
+
         if(emp)
             res.status(201).json({emp});
         else
@@ -32,25 +35,27 @@ router.get("/employees/:id", async (req, res) => {
 
 //http://localhost:3000/api/v1/emp/employees
 router.post("/employees", async (req, res) => {
-    try{
-        const {first_name, last_name, email, positon, 
-            salary, date_of_joining, department} = req.body;
-        
-        let newEmp = await new model({
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-            positon: positon,
-            salary: salary,
-            date_of_joining: date_of_joining,
-            department: department,
+    try{        
+        const email = req.body.email;
+        if(await model.findOne({email: email})){
+            res.status(401).json({
+                message: `User with email ${email} already exists.`
+            });
+            return
+        }
+
+        const newEmp = await new model({
+            ...req.body,
             created_at: Date.now()
         })
 
-        newEmp.save();
-        newEmp = await model.findOne({email: email});
-
-        res.status(201).json(newEmp);
+        await newEmp.save().catch(e => {
+            console.log(e);
+            res.status(500).send(e);
+            return
+        });
+        
+        res.status(201).json(await model.findOne(newEmp));
     }catch(e){
         res.status(500).send(e);
     }
@@ -59,12 +64,17 @@ router.post("/employees", async (req, res) => {
 //http://localhost:3000/api/v1/emp/employees/{eid}
 router.put("/employees/:id", async (req, res) => {
     try{
-        const {positon, salary} = req.body;
-        const id = req.params;
+        const id = new mongoose.Types.ObjectId(req.params) 
+        await model.findById({_id: id}).catch(e => { // Will not throw error if user DNE 
+            console.log(e);
+            res.status(401).json({
+                message: `User with id ${id} was not found`
+            });
+            return
+        });
 
-        await model.findOneAndUpdate({_id: id}, 
-            {positon: positon}, {salary: salary});
-        
+        await model.findByIdAndUpdate({_id: id}, {$set : req.body, updated_at: Date.now()});
+
         res.status(201).json({
             message: "Employee details updated successfully."
         });
@@ -76,7 +86,7 @@ router.put("/employees/:id", async (req, res) => {
 //http://localhost:3000/api/v1/emp/employees/{eid}
 router.delete("/employees/:id", async (req, res) => {
     try{
-        const id = req.params;
+        const id = new mongoose.Types.ObjectId(req.params)
 
         await model.findByIdAndDelete({_id: id});
 

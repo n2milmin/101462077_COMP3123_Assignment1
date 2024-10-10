@@ -1,19 +1,20 @@
 const express = require('express');
 const app = express();
-const apivi = express();
-const userRouter = require('/routes/user');
-const empRouter = require('/routes/employees')
+const mongoose = require('mongoose');
+const apiv1 = express();
+const userRouter = require('./routes/users');
+const empRouter = require('./routes/employees')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true})); 
 
-apivi.use('/user', userRouter);
-apivi.use('/emp', empRouter);
+apiv1.use('/user', userRouter);
+apiv1.use('/emp', empRouter);
 app.use('/api/v1', apiv1)
 
 const SERVER_PORT = 3000;
 
-mongoose.connect('mongo://localhost:27017/db/comp3123', {
+mongoose.connect('mongodb://admin:admin@localhost:27017/comp3123?authSource=admin', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
