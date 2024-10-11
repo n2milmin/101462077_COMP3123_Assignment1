@@ -12,7 +12,7 @@ apiv1.use('/user', userRouter);
 apiv1.use('/emp', empRouter);
 app.use('/api/v1', apiv1)
 
-const SERVER_PORT = 3000;
+mongoose.Promise = global.Promise;
 
 mongoose.connect('mongodb://admin:admin@localhost:27017/comp3123?authSource=admin', {
     useNewUrlParser: true,
@@ -42,5 +42,5 @@ app.route('/').get((req, res) => {
 
 // Listen to server
 app.listen(SERVER_PORT, () => {
-    console.log(`Server is running on http://localhost:${SERVER_PORT}`);
+    console.log('Server is running on http://localhost:3000');
 })

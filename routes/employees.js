@@ -1,13 +1,16 @@
 const express = require('express');
 const model = require("../models/Employee");
 const mongoose = require('mongoose');
+const { query, validationResult } = require('express-validator');
 const router = express.Router();
 
+// Landing page
 //http://localhost:3000/api/v1/emp/
 router.get('/', (req, res) => {
     res.send("<h1>Welcome from Employees</h1>");
 });
 
+// Return all employees
 //http://localhost:3000/api/v1/emp/employees
 router.get("/employees", async (req, res) => {
     try{
@@ -18,12 +21,16 @@ router.get("/employees", async (req, res) => {
     }
 });
 
+// Return employee with id 
 //http://localhost:3000/api/v1/emp/employees/id
-router.get("/employees/:id", async (req, res) => {
+router.get("/employees/:id", query('id').notEmpty(), async (req, res) => {
+    // Preform task
     try{
         const id = new mongoose.Types.ObjectId(req.params)
+        // Find user
         const emp = await model.findOne({_id: id});
 
+        // Return user if exists
         if(emp)
             res.status(201).json({emp});
         else
@@ -33,10 +40,21 @@ router.get("/employees/:id", async (req, res) => {
     }
 });
 
+// Create employee
 //http://localhost:3000/api/v1/emp/employees
 router.post("/employees", async (req, res) => {
+    // Validate req.body not empty
+    if(!validationResult(req.body).isEmpty()){
+        res.status(401).json({
+            message: 'Invalid attempt to create user'
+        });
+        return
+    }
+
+    // Do task
     try{        
         const email = req.body.email;
+        // Does user with email already exist
         if(await model.findOne({email: email})){
             res.status(401).json({
                 message: `User with email ${email} already exists.`
@@ -44,16 +62,14 @@ router.post("/employees", async (req, res) => {
             return
         }
 
+        // Create new emp
         const newEmp = await new model({
             ...req.body,
             created_at: Date.now()
         })
 
-        await newEmp.save().catch(e => {
-            console.log(e);
-            res.status(500).send(e);
-            return
-        });
+        // Save new emp 
+        await newEmp.save();
         
         res.status(201).json(await model.findOne(newEmp));
     }catch(e){
@@ -61,18 +77,29 @@ router.post("/employees", async (req, res) => {
     }
 });
 
-//http://localhost:3000/api/v1/emp/employees/{eid}
-router.put("/employees/:id", async (req, res) => {
+// Update employee with id
+//http://localhost:3000/api/v1/emp/employees/{id}
+router.put("/employees/:id", query('id').notEmpty(), async (req, res) => {
+    // Validate req.body
+    if(!validationResult(req.body).isEmpty()){
+        res.status(401).json({
+            message: 'Nothing to update'
+        });
+        return
+    }
+
+    // Complete task 
     try{
         const id = new mongoose.Types.ObjectId(req.params) 
-        await model.findById({_id: id}).catch(e => { // Will not throw error if user DNE 
-            console.log(e);
+        // Check if user exists 
+        if(await model.findById({_id: id}) == null){
             res.status(401).json({
-                message: `User with id ${id} was not found`
+                message: `User with id: ${id} not found`
             });
             return
-        });
+        }
 
+        // Update user 
         await model.findByIdAndUpdate({_id: id}, {$set : req.body, updated_at: Date.now()});
 
         res.status(201).json({
@@ -83,11 +110,13 @@ router.put("/employees/:id", async (req, res) => {
     }
 });
 
-//http://localhost:3000/api/v1/emp/employees/{eid}
-router.delete("/employees/:id", async (req, res) => {
+// Delete employee with id
+//http://localhost:3000/api/v1/emp/employees?id=
+router.delete("/employees", query('id').notEmpty(), async (req, res) => {
     try{
         const id = new mongoose.Types.ObjectId(req.params)
 
+        // Delete emp
         await model.findByIdAndDelete({_id: id});
 
         res.status(201).json({
