@@ -1,17 +1,30 @@
 const express = require('express');
 const model = require('../models/User');
+const { validationResult } = require('express-validator');
 const router = express.Router();
 
+// Landing page
 //http://localhost:3000/user/
 router.get('/', (req, res) => {
     res.send("<h1>Welcome from Users</h1>");
 });
 
+// Sign up user
 //http://localhost:3000/user/signup
 router.post('/signup', async (req, res) => {
+    // Validate req.body
+    if(!validationResult(req.body).isEmpty()){
+        res.status(401).json({
+            message: "Missing required information"
+        });
+        return
+    }
+
+    // Preform task
     try{
         const { username, email, password } = req.body;
         
+        // Check if user exists
         if(await model.findOne({username: username})){
             res.status(401).json({
                 message: "Username already exists"
@@ -19,6 +32,10 @@ router.post('/signup', async (req, res) => {
             return;
         };
 
+        // Hash password
+        
+
+        // Create user
         let user = await new model({
             username: username,
             email: email,
@@ -26,7 +43,8 @@ router.post('/signup', async (req, res) => {
             created_at: Date.now()
         });
         
-        user.save();
+        // Save & fetch new user
+        await user.save();
         user = await model.findOne({username: username});
 
         res.status(201).json({
@@ -38,15 +56,26 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-
-//http://localhost:3000/user/
+// Login
+//http://localhost:3000/user/login
 router.post("/login", async (req, res) => {
-    const givenUser = req.body;
+    // Validate req.body
+    if(!validationResult(req.body).isEmpty()){
+        res.status(401).json({
+            message: "Missing required information"
+        })
+        return;
+    }
+
+    // Preform task
     try{
+        const givenUser = req.body;
+        // find user by username or email
         const foundUser = await model.findOne({
             $or: [{username: givenUser.username}, {email: givenUser.email}]
         });
 
+        // Validate password
         if(foundUser){
             if(password != foundUser.password){
                 res.status(401).json({
