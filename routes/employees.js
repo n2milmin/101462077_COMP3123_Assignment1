@@ -112,7 +112,7 @@ router.put("/employees/:id", query('id').notEmpty(), async (req, res) => {
 
 // Delete employee with id
 //http://localhost:3000/api/v1/emp/employees?id=
-router.delete("/employees", query('id').notEmpty(), async (req, res) => {
+router.delete("/employees/:id", query('id').notEmpty(), async (req, res) => {
     try{
         const id = new mongoose.Types.ObjectId(req.params)
 
