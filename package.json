@@ -25,7 +25,7 @@
     "id": "101462077",
     "email": "nicole.milmine@georgebrown.com"
   },
-  "homepage": "https://nodejs.org/",
+  "homepage": "https://101462077-comp-3123-assignment1.vercel.app/",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",

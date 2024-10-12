@@ -23,18 +23,6 @@ mongoose.connect('mongodb://admin:admin@localhost:27017/comp3123?authSource=admi
     console.log(err);
 });
 
-const loggerMiddleware = (req, res, next) => {
-    console.log(`Logged ${req.url} ${req.method} -- ${new Date()}`);
-    next();
-}
-// Apply middleware to all requests 
-app.use('/user', loggerMiddleware)
-
-// Error endpoint 
-app.get('/error', (req, res) => {
-    throw new Error('This is a forced error');
-});
-
 //http://localhost:3000/
 app.route('/').get((req, res) => {
     res.send("<h1>Welcome</h1>");
