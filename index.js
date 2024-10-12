@@ -41,6 +41,6 @@ app.route('/').get((req, res) => {
 });
 
 // Listen to server
-app.listen(SERVER_PORT, () => {
+app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 })

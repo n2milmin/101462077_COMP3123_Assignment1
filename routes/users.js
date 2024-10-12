@@ -1,6 +1,7 @@
 const express = require('express');
 const model = require('../models/User');
 const { validationResult } = require('express-validator');
+const { compare } = require('bcrypt');
 const router = express.Router();
 
 // Landing page
@@ -77,11 +78,11 @@ router.post("/login", async (req, res) => {
 
         // Validate password
         if(foundUser){
-            if(password != foundUser.password){
+            if(!compare(givenUser.password, foundUser.password)){
                 res.status(401).json({
                     status: false,
                     message: "Invalid username/password."
-                })
+                });
             }
             else{
                 res.status(200).json({
