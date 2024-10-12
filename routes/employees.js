@@ -41,6 +41,17 @@ router.get("/employees/:id", query('id').notEmpty(), async (req, res) => {
 });
 
 // Create employee
+/* 
+{
+  "first_name": "Alice",
+  "last_name": "Johnson",
+  "email": "alice.johnson@example.com",
+  "position": "Designer",
+  "salary": 85000,
+  "date_of_joining": "2023-08-10T00:00:00.000Z",
+  "department": "Design"
+}
+*/
 //http://localhost:3000/api/v1/emp/employees
 router.post("/employees", async (req, res) => {
     // Validate req.body not empty
@@ -78,6 +89,12 @@ router.post("/employees", async (req, res) => {
 });
 
 // Update employee with id
+/*
+{
+ "position": "Developer",
+ "salary": 100000
+}
+*/
 //http://localhost:3000/api/v1/emp/employees/{id}
 router.put("/employees/:id", query('id').notEmpty(), async (req, res) => {
     // Validate req.body

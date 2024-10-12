@@ -11,6 +11,13 @@ router.get('/', (req, res) => {
 });
 
 // Sign up user
+/*
+{
+  "username": "johndoe",
+  "email": "johndoe@domain.com",
+  "password": "password123"
+} 
+*/
 //http://localhost:3000/user/signup
 router.post('/signup', async (req, res) => {
     // Validate req.body
@@ -58,6 +65,12 @@ router.post('/signup', async (req, res) => {
 });
 
 // Login
+/*
+{
+  "email": "johndoe@domain.com",
+  "password": "password123"
+}
+*/
 //http://localhost:3000/user/login
 router.post("/login", async (req, res) => {
     // Validate req.body
