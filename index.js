@@ -4,9 +4,15 @@ const mongoose = require('mongoose');
 const apiv1 = express();
 const userRouter = require('./routes/users');
 const empRouter = require('./routes/employees')
+const cors = require('cors');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true})); 
+app.use(cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "PUT", "POST", "DELETE"],
+    allowedHeaders: ['Content-Type', "Authorization"]
+}));
 
 apiv1.use('/user', userRouter);
 apiv1.use('/emp', empRouter);
@@ -29,6 +35,6 @@ app.route('/').get((req, res) => {
 });
 
 // Listen to server
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+app.listen(5000, () => {
+    console.log('Server is running on http://localhost:5000');
 })

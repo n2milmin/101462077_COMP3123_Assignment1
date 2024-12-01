@@ -12,17 +12,6 @@ router.get('/', (req, res) => {
 
 // Return all employees
 //http://localhost:3000/api/v1/emp/employees
-router.get("/employees", async (req, res) => {
-    try{
-        const employees = await model.find({});
-        res.status(201).json({employees});
-    }catch(e){
-        res.status(500).send(e)
-    }
-});
-
-// Return employee with id 
-//http://localhost:3000/api/v1/emp/employees/id
 router.get("/employees/:id", query('id').notEmpty(), async (req, res) => {
     // Preform task
     try{
@@ -35,6 +24,42 @@ router.get("/employees/:id", query('id').notEmpty(), async (req, res) => {
             res.status(201).json({emp});
         else
             res.status(401).json({message: "User not found"});
+    }catch(e){
+        res.status(500).send(e);
+    }
+});
+
+
+// SEARCH
+//http://localhost:3000/api/v1/emp/search/department
+router.get("/search/department/:type", query('type').notEmpty(), async (req, res) => {
+    // Preform task
+    try{
+        // Find user
+        const emp = await model.find({"department": { $regex: req.params.type, $options: 'i' }});
+
+        // Return user if exists
+        if(emp)
+            res.status(201).json({emp});
+        else
+            res.status(401).json({message: "No users found"});
+    }catch(e){
+        res.status(500).send(e);
+    }
+});
+
+//http://localhost:3000/api/v1/emp/search/position
+router.get("/search/position/:type", query('type').notEmpty(), async (req, res) => {
+    // Preform task
+    try{
+        // Find user
+        const emp = await model.find({"position": { $regex: req.params.type, $options: 'i' }});
+
+        // Return user if exists
+        if(emp)
+            res.status(201).json({emp});
+        else
+            res.status(401).json({message: "No users found"});
     }catch(e){
         res.status(500).send(e);
     }
@@ -67,15 +92,14 @@ router.post("/employees", async (req, res) => {
         const email = req.body.email;
         // Does user with email already exist
         if(await model.findOne({email: email})){
-            res.status(401).json({
-                message: `User with email ${email} already exists.`
-            });
+            res.status(401).json(`User with email ${email} already exists.`);
             return
         }
 
         // Create new emp
         const newEmp = await new model({
             ...req.body,
+            date_of_joining: Date.now(),
             created_at: Date.now()
         })
 
